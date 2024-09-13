@@ -43,7 +43,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
           {stepMarks.map((mark) => (
             <div
               key={mark}
-              className="absolute h-1.5 bg-gray-300"
+              className="absolute h-1.5 bg-gray-500"
               style={{ left: `${(mark / 12) * 100}%`, width: "1px" }}
             />
           ))}

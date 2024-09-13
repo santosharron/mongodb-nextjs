@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ListFilter } from "lucide-react";
+import { Info, ListFilter, Share2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
@@ -242,52 +242,68 @@ export function JobSearchInterfaceComponent() {
     <div className="overflow-y-auto flex-1">
       {filteredJobs.map(job => (
         <Card key={job._id} className='mb-8'>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between mb-4 p-4">
-              <div className="flex items-center space-x-4">
-                <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
-                <div>
-                  <h2 className="text-xl font-bold">{job.title}</h2>
-                  <p className="text-gray-600">{job.company} | {job.location}</p>
-                </div>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between mb-4 p-4">
+            <div className="flex items-center space-x-4">
+              <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
+              <div>
+                <h2 className="text-xl font-bold">{job.title}</h2>
+                <p className="text-gray-600">{job.company} | {job.location}</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-4 mb-4">
-              {job.skills.map((skill, index) => (
-                <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
-                  {skill}
-                </span>
-              ))}
+            <Share2 className="text-gray-400" size={20} />
+          </div>
+  
+          <div className="flex flex-wrap gap-4 mb-4">
+            {job.skills.map((skill, index) => (
+              <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
+                {skill}
+              </span>
+            ))}
+          </div>
+  
+          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+            <div>
+              <p className="text-gray-600">💼 Job Offer</p>
+              <p className="font-semibold">{job.salaryRange}</p>
             </div>
-            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+            <div>
+              <p className="text-gray-600">Experience</p>
+              <p className="font-semibold">{job.experienceLevel}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">📅 Start Date</p>
+              <p className="font-semibold">{job.immediateStartDate}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">#Openings</p>
+              <p className="font-semibold">{job.jobOpenings}</p>
+            </div>
+            <div className="col-span-2 flex items-center">
               <div>
-                <p className="text-gray-600">Job Offer</p>
-                <p className="font-semibold">{job.salaryRange}</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Experience</p>
-                <p className="font-semibold">{job.experienceLevel}</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Immediate Start</p>
+                <p className="text-gray-600">Probation Duration</p>
                 <p className="font-semibold">{job.immediateStartDate}</p>
               </div>
-              <div>
-                <p className="text-gray-600">Job Openings</p>
-                <p className="font-semibold">{job.jobOpenings}</p>
-              </div>
             </div>
-            <div className="flex flex-col lg:flex-row justify-between items-center">
-              <p className="text-sm text-blue-500">Apply by 13 October 2024 • Posted 2h ago</p>
-              <div className="space-x-2 mt-4 lg:mt-0">
-                <Button variant="outline">View Details</Button>
-                <Link href="https://www.linkedin.com/in/santoshvp/" target='_blank'>
-                  <Button>Apply Now</Button>
-                </Link>
-              </div>
+          </div>
+  
+          <p className="text-sm text-blue-500 mb-4">100+ applicants</p>
+  
+          <div className="flex flex-col lg:flex-row justify-between items-center">
+            <p className="text-sm text-gray-500">Apply by 13 October 2024 • Posted 7h ago</p>
+            <div className="space-x-2 mt-4 lg:mt-0">
+              <Button variant="outline">View Details</Button>
+              <Link href="https://www.linkedin.com/in/santoshvp/" target='_blank'>
+                <Button>Apply Now</Button>
+              </Link>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+        <div className="border-t border-gray-200"></div>
+        <div className="bg-blue-500 text-white p-3 text-center">
+          Share this with your friends and Earn 💵 via LFJ Click Here
+        </div>
+      </Card>
       ))}
     </div>
   </div>

@@ -1,51 +1,33 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { ListFilter, Share2Icon } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ListFilter } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { GetStaticProps } from "next";
-import Link from 'next/link'
+import Link from 'next/link';
 
-interface Jobs {
-  _id: ObjectId;
+interface Job {
+  _id: string;
   title: string;
-  metacritic: number;
-  plot: string;
+  company: string;
+  imageUrl: string;
+  immediateStartDate: string;
+  jobOpenings: string;
+  url: string;
+  location: string;
+  skills: string[];
+  salaryRange: string;
+  experienceLevel: string;
 }
-
-
-interface TopProps {
-  jobs: Jobs[];
-}
-
-// Define a Job type to avoid the 'never' type error
-type Job = {
-  _id: string
-  title: string
-  company: string
-  imageUrl: string
-  immediateStartDate: string
-  jobOpenings: string
-  url: string
-  location: string
-  skills: string[]
-  salaryRange: string
-  experienceLevel: string
-}
-
 
 const locations = [
   "New York",
@@ -54,19 +36,30 @@ const locations = [
   "Berlin",
   "Tokyo",
   "Remote",
-]
+];
 
 const skillsList = [
+  "Agile",
+  "Communication",
+  "Adobe XD",
+  "Figma",
+  "User Research",
+  "Product Development",
+  "Content Marketing",
+  "Analytics",
   "React.js",
   "Next.js",
   "JavaScript",
   "TypeScript",
   "Node.js",
   "Express.js",
+  "Python",
   "MongoDB",
+  "Machine Learning",
   "GraphQL",
   "HTML",
   "CSS",
+  "SQL",
   "Tailwind CSS",
   "Docker",
   "Kubernetes",
@@ -80,7 +73,7 @@ const skillsList = [
   "Backend Developer",
   "Full Stack Developer",
   "DevOps Engineer",
-]
+];
 
 const experienceLevels = [
   "Entry Level",
@@ -88,7 +81,7 @@ const experienceLevels = [
   "3-5 years",
   "5-7 years",
   "7+ years",
-]
+];
 
 export function JobSearchInterfaceComponent() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -98,12 +91,55 @@ export function JobSearchInterfaceComponent() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedExperience, setSelectedExperience] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch('/api/jobs');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: Job[] = await response.json();
+        setJobs(data);
+        setFilteredJobs(data); // Show all jobs initially
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  useEffect(() => {
+    // Filter jobs whenever filters or job list changes
+    const applyFilters = () => {
+      let result = jobs;
+
+      if (selectedSkills.length > 0) {
+        result = result.filter(job =>
+          selectedSkills.every(skill => job.skills.includes(skill))
+        );
+      }
+
+      if (selectedLocations.length > 0) {
+        result = result.filter(job => selectedLocations.includes(job.location));
+      }
+
+      if (selectedExperience) {
+        result = result.filter(job => job.experienceLevel === selectedExperience);
+      }
+
+      setFilteredJobs(result);
+    };
+
+    applyFilters();
+  }, [selectedSkills, selectedLocations, selectedExperience, jobs]);
 
   const handleSkillInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSkillSearchTerm(value);
     if (value) {
-      const filtered = skillsList.filter((skill) =>
+      const filtered = skillsList.filter(skill =>
         skill.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredSkills(filtered);
@@ -121,26 +157,22 @@ export function JobSearchInterfaceComponent() {
   };
 
   const handleRemoveSkill = (skill: string) => {
-    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+    setSelectedSkills(selectedSkills.filter(s => s !== skill));
   };
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch('/api/jobs');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data: Job[] = await response.json();
-        setJobs(data);
-      } catch (error) {
-        console.error('Error fetching jobs:', error);
-      }
-    };
-  
-    fetchJobs();
-  }, []);
-  
+  const handleLocationChange = (value: string) => {
+    if (selectedLocations.length < 3 && !selectedLocations.includes(value)) {
+      setSelectedLocations([...selectedLocations, value]);
+    }
+  };
+
+  const handleRemoveLocation = (location: string) => {
+    setSelectedLocations(selectedLocations.filter(l => l !== location));
+  };
+
+  const handleExperienceChange = (value: string) => {
+    setSelectedExperience(value);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -162,7 +194,7 @@ export function JobSearchInterfaceComponent() {
                   />
                   {skillSearchTerm && filteredSkills.length > 0 && (
                     <div className="absolute z-10 w-full bg-white border border-gray-200 shadow-lg rounded-md max-h-40 overflow-auto">
-                      {filteredSkills.map((skill) => (
+                      {filteredSkills.map(skill => (
                         <div
                           key={skill}
                           onClick={() => handleSelectSkill(skill)}
@@ -176,25 +208,25 @@ export function JobSearchInterfaceComponent() {
                 </div>
 
                 <div className="flex flex-col items-center">
-                <Popover><PopoverTrigger asChild>
-                  <Button>Sort by (Date)<ListFilter className='ml-2'/></Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-50">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none text-blue-600">Post Time (Newest first)</h4>
-            
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-                  <span className="text-sm text-gray-500 block">20 results</span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button>Sort by (Date)<ListFilter className='ml-2' /></Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-50">
+                      <div className="grid gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium leading-none text-blue-600">Post Time (Newest first)</h4>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <span className="text-sm text-gray-500 block">{filteredJobs.length} results</span>
                 </div>
               </div>
 
               {/* Display selected skills */}
               <div className="flex flex-wrap gap-2 mt-4">
-                {selectedSkills.map((skill) => (
+                {selectedSkills.map(skill => (
                   <span
                     key={skill}
                     className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
@@ -213,7 +245,7 @@ export function JobSearchInterfaceComponent() {
           </Card>
 
           {/* Job Listings */}
-          {jobs.map((job) => (
+          {filteredJobs.map(job => (
             <Card key={job._id}>
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-4">
@@ -271,20 +303,14 @@ export function JobSearchInterfaceComponent() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">
-                Add your preferred locations for In-Office Jobs/Internship (Upto 3). Add "Remote" if you want only work from home Jobs.
+                Add your preferred locations for In-Office Jobs/Internship (Up to 3). Add "Remote" if you want only work from home Jobs.
               </p>
-              <Select
-                onValueChange={(value) => {
-                  if (selectedLocations.length < 3 && !selectedLocations.includes(value)) {
-                    setSelectedLocations([...selectedLocations, value])
-                  }
-                }}
-              >
+              <Select onValueChange={handleLocationChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select locations" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locations.map((location) => (
+                  {locations.map(location => (
                     <SelectItem key={location} value={location}>
                       {location}
                     </SelectItem>
@@ -292,11 +318,11 @@ export function JobSearchInterfaceComponent() {
                 </SelectContent>
               </Select>
               <div className="mt-4 flex flex-wrap gap-2">
-                {selectedLocations.map((location) => (
+                {selectedLocations.map(location => (
                   <span key={location} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
                     {location}
                     <button
-                      onClick={() => setSelectedLocations(selectedLocations.filter(l => l !== location))}
+                      onClick={() => handleRemoveLocation(location)}
                       className="ml-1 text-blue-800 hover:text-blue-900"
                     >
                       ×
@@ -328,12 +354,12 @@ export function JobSearchInterfaceComponent() {
               </div>
               <div>
                 <h4 className="font-semibold mb-2">Work Experience</h4>
-                <Select onValueChange={setSelectedExperience}>
+                <Select onValueChange={handleExperienceChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select experience" />
                   </SelectTrigger>
                   <SelectContent>
-                    {experienceLevels.map((level) => (
+                    {experienceLevels.map(level => (
                       <SelectItem key={level} value={level}>
                         {level}
                       </SelectItem>
@@ -361,12 +387,12 @@ export function JobSearchInterfaceComponent() {
               </div>
               <div className="flex justify-between">
                 <Button variant="ghost">Clear</Button>
-                <Button>Apply</Button>
+                <Button onClick={() => setFilteredJobs(jobs)}>Apply</Button>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
-  )
+  );
 }

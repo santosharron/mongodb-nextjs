@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { ListFilter } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -14,6 +13,8 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { GetStaticProps } from "next";
 import Link from 'next/link';
+
+import { Slider } from '@/components/ui/slider'; // Import Shadcn Slider
 
 interface Job {
   _id: string;
@@ -90,6 +91,7 @@ export function JobSearchInterfaceComponent() {
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedExperience, setSelectedExperience] = useState("");
+  const [salaryRange, setSalaryRange] = useState<number[]>([0, 12]); // Default range
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
 
@@ -129,11 +131,18 @@ export function JobSearchInterfaceComponent() {
         result = result.filter(job => job.experienceLevel === selectedExperience);
       }
 
+      if (salaryRange) {
+        result = result.filter(job => {
+          const minSalary = parseInt(job.salaryRange.split(' ')[0], 10);
+          return minSalary >= salaryRange[0] && minSalary <= salaryRange[1];
+        });
+      }
+
       setFilteredJobs(result);
     };
 
     applyFilters();
-  }, [selectedSkills, selectedLocations, selectedExperience, jobs]);
+  }, [selectedSkills, selectedLocations, selectedExperience, salaryRange, jobs]);
 
   const handleSkillInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -172,6 +181,14 @@ export function JobSearchInterfaceComponent() {
 
   const handleExperienceChange = (value: string) => {
     setSelectedExperience(value);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedSkills([]);
+    setSelectedLocations([]);
+    setSelectedExperience("");
+    setSalaryRange([0, 12]); // Reset slider range
+    setFilteredJobs(jobs); // Show all jobs
   };
 
   return (
@@ -248,151 +265,165 @@ export function JobSearchInterfaceComponent() {
           {filteredJobs.map(job => (
             <Card key={job._id}>
               <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
-                    <div>
-                      <h2 className="text-xl font-bold">{job.title}</h2>
-                      <p className="text-gray-600">{job.company} | {job.location}</p>
+              <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-4">
+                        <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
+                        <div>
+                          <h2 className="text-xl font-bold">{job.title}</h2>
+                          <p className="text-gray-600">{job.company} | {job.location}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {job.skills.map((skill, index) => (
-                    <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                  <div>
-                    <p className="text-gray-600">Job Offer</p>
-                    <p className="font-semibold">{job.salaryRange}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Experience</p>
-                    <p className="font-semibold">{job.experienceLevel}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Immediate Start</p>
-                    <p className="font-semibold">{job.immediateStartDate}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Job Openings</p>
-                    <p className="font-semibold">{job.jobOpenings}</p>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-blue-500">Apply by 13 October 2024 • Posted 2h ago</p>
-                  <div className="space-x-2">
-                    <Button variant="outline">View Details</Button>
-                    <Link href="https://www.linkedin.com/in/santoshvp/" target='_blank'><Button>Apply Now</Button></Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {job.skills.map((skill, index) => (
+                        <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                      <div>
+                        <p className="text-gray-600">Job Offer</p>
+                        <p className="font-semibold">{job.salaryRange}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Experience</p>
+                        <p className="font-semibold">{job.experienceLevel}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Immediate Start</p>
+                        <p className="font-semibold">{job.immediateStartDate}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Job Openings</p>
+                        <p className="font-semibold">{job.jobOpenings}</p>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm text-blue-500">Apply by 13 October 2024 • Posted 2h ago</p>
+                      <div className="space-x-2">
+                        <Button variant="outline">View Details</Button>
+                        <Link href="https://www.linkedin.com/in/santoshvp/" target='_blank'>
+                          <Button>Apply Now</Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-        {/* Right column: Job/Internship Location Preference and Filters */}
-        <div className="space-y-6">
-          {/* Job/Internship Location Preference */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Job/Internship Location Preference</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
-                Add your preferred locations for In-Office Jobs/Internship (Up to 3). Add "Remote" if you want only work from home Jobs.
-              </p>
-              <Select onValueChange={handleLocationChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select locations" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map(location => (
-                    <SelectItem key={location} value={location}>
-                      {location}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {selectedLocations.map(location => (
-                  <span key={location} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {location}
-                    <button
-                      onClick={() => handleRemoveLocation(location)}
-                      className="ml-1 text-blue-800 hover:text-blue-900"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Apply Filters */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Apply filters</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h4 className="font-semibold mb-2">Office Type</h4>
-                <RadioGroup defaultValue="remote">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="remote" id="remote" />
-                    <Label htmlFor="remote">Remote</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="in-office" id="in-office" />
-                    <Label htmlFor="in-office">In-Office</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Work Experience</h4>
-                <Select onValueChange={handleExperienceChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select experience" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {experienceLevels.map(level => (
-                      <SelectItem key={level} value={level}>
-                        {level}
-                      </SelectItem>
+            {/* Right column: Job/Internship Location Preference and Filters */}
+            <div className="space-y-6">
+              {/* Job/Internship Location Preference */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Job/Internship Location Preference</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Add your preferred locations for In-Office Jobs/Internship (Up to 3). Add "Remote" if you want only work from home Jobs.
+                  </p>
+                  <Select onValueChange={handleLocationChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select locations" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {locations.map(location => (
+                        <SelectItem key={location} value={location}>
+                          {location}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {selectedLocations.map(location => (
+                      <span key={location} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        {location}
+                        <button
+                          onClick={() => handleRemoveLocation(location)}
+                          className="ml-1 text-blue-800 hover:text-blue-900"
+                        >
+                          ×
+                        </button>
+                      </span>
                     ))}
-                  </SelectContent>
-                </Select>
-                {selectedExperience && (
-                  <div className="mt-2">
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                      {selectedExperience}
-                    </span>
                   </div>
-                )}
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Min Salary</h4>
-                <Slider defaultValue={[3]} max={12} step={1} className="mb-2" />
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>3 LPA</span>
-                  <span>6 LPA</span>
-                  <span>8 LPA</span>
-                  <span>10 LPA</span>
-                  <span>12 LPA</span>
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <Button variant="ghost">Clear</Button>
-                <Button onClick={() => setFilteredJobs(jobs)}>Apply</Button>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+
+              {/* Apply Filters */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Apply filters</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h4 className="font-semibold mb-2">Office Type</h4>
+                    <RadioGroup defaultValue="remote">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="remote" id="remote" />
+                        <Label htmlFor="remote">Remote</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="in-office" id="in-office" />
+                        <Label htmlFor="in-office">In-Office</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Work Experience</h4>
+                    <Select onValueChange={handleExperienceChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select experience" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {experienceLevels.map(level => (
+                          <SelectItem key={level} value={level}>
+                            {level}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selectedExperience && (
+                      <div className="mt-2">
+                        <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                          {selectedExperience}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                      <h4 className="font-semibold mb-2">Min Salary</h4>
+                      <Slider
+                        value={salaryRange}
+                        min={0}
+                        max={12}
+                        step={1}
+                        onValueChange={setSalaryRange}
+                        className="mb-2"
+                        completedClassName="bg-gray-300"
+                        nonCompletedClassName="bg-blue-500"
+                        thumbClassName="bg-blue-500"
+                        stepMarks={[0, 3, 6, 8, 10, 12]}
+                      />
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>0 LPA</span>
+                        <span>6 LPA</span>
+                        <span>12 LPA</span>
+                      </div>
+                    </div>
+
+
+                  <div className="flex justify-between">
+                    <Button variant="ghost" onClick={handleClearFilters}>Clear</Button>
+                    <Button onClick={() => setFilteredJobs(jobs)}>Apply</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
+      );
+    }
+

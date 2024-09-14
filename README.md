@@ -1,4 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+> **_Note:_** Due to time constraints, I am submitting this task earlier than planned. Please note that I won't be able to edit this README file further. Since this repository is public, others might use or reference it. I appreciate your understanding.
+
 
 ## Getting Started
 

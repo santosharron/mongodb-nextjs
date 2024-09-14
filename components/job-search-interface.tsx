@@ -202,20 +202,26 @@ export function JobSearchInterfaceComponent() {
             </div>
 
             <div className="flex flex-col items-center lg:items-start">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button className="w-full lg:w-auto">Sort by (Date)<ListFilter className='ml-2' /></Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-50">
-                  <div className="grid gap-4">
-                    <div className="space-y-2">
-                      <h4 className="font-medium leading-none text-blue-600">Post Time (Newest first)</h4>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <span className="text-sm text-gray-500 block">{filteredJobs.length} results</span>
-            </div>
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button className="w-full lg:w-auto flex items-center justify-center">
+        Sort by (Date)
+        <ListFilter className='ml-2' />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-50">
+      <div className="grid gap-4">
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none text-blue-600">Post Time (Newest first)</h4>
+        </div>
+      </div>
+    </PopoverContent>
+  </Popover>
+  <div className="flex justify-center mt-2 w-full">
+    <span className="text-sm text-gray-500 text-center">{filteredJobs.length} results</span>
+  </div>
+</div>
+
           </div>
 
           {/* Display selected skills */}
@@ -241,114 +247,116 @@ export function JobSearchInterfaceComponent() {
 
     {/* Job Listings */}
     <div className="overflow-y-auto flex-1">
-      {filteredJobs.map(job => (
-        <Card key={job._id} className='mb-8'>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between mb-4 p-4">
-            <div className="flex items-center space-x-4">
-              <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
-              <div>
-                <h2 className="text-xl font-bold">{job.title}</h2>
-                <p className="text-gray-600">{job.company} | {job.location}</p>
-              </div>
-            </div>
-            <Share2 className="text-gray-400" size={20} />
-          </div>
-  
-          <div className="flex flex-wrap gap-4 mb-4">
-            {job.skills.map((skill, index) => (
-              <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
-                {skill}
-              </span>
-            ))}
-          </div>
-  
-         {/* Desktop Layout */}
-<div className="hidden md:flex flex-row items-center text-sm mb-4">
-  {/* Job Offer */}
-  <div className="flex items-center flex-1">
-    <div className="flex flex-col items-center w-full">
-      <p className="text-gray-600">💼 Job Offer</p>
-      <p className="font-semibold mt-1">{job.salaryRange}</p>
-    </div>
-  </div>
-
-  {/* Start Date */}
-  <div className="flex items-center flex-1">
-    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
-    <div className="flex flex-col items-center w-full">
-      <p className="text-gray-600">📅 Start Date</p>
-      <p className="font-semibold mt-1">{job.immediateStartDate}</p>
-    </div>
-  </div>
-
-  {/* Openings */}
-  <div className="flex items-center flex-1">
-    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
-    <div className="flex flex-col items-center w-full">
-      <p className="text-gray-600">#Openings</p>
-      <p className="font-semibold mt-1">{job.jobOpenings}</p>
-    </div>
-  </div>
-
-  {/* Probation Duration */}
-  <div className="flex items-center flex-1">
-    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
-    <div className="flex flex-col items-center w-full">
-      <p className="text-gray-600">Probation Duration</p>
-      <p className="font-semibold mt-1">{job.probationDuration}</p>
-    </div>
-  </div>
-</div>
-
-{/* Mobile Layout */}
-<div className="md:hidden flex flex-col space-y-4 mb-4">
-  {/* Job Offer */}
-  <div className="flex flex-col items-center">
-    <p className="text-gray-600">💼 Job Offer</p>
-    <p className="font-semibold mt-1">{job.salaryRange}</p>
-  </div>
-
-  {/* Start Date */}
-  <div className="flex flex-col items-center">
-    <p className="text-gray-600">📅 Start Date</p>
-    <p className="font-semibold mt-1">{job.immediateStartDate}</p>
-  </div>
-
-  {/* Openings */}
-  <div className="flex flex-col items-center">
-    <p className="text-gray-600">#Openings</p>
-    <p className="font-semibold mt-1">{job.jobOpenings}</p>
-  </div>
-
-  {/* Probation Duration */}
-  <div className="flex flex-col items-center">
-    <p className="text-gray-600">Probation Duration</p>
-    <p className="font-semibold mt-1">{job.probationDuration}</p>
-  </div>
-</div>
-
-
-  
-          <p className="text-sm text-blue-500">100+ applicants</p>
-  
-          <div className="flex flex-col lg:flex-row justify-between items-center">
-            <p className="text-sm text-gray-500">Apply by 13 October 2024 • Posted 7h ago</p>
-            <div className="space-x-2 mt-4 lg:mt-0">
-              <Button variant="outline">View Details</Button>
-              <Link href="https://www.linkedin.com/in/santoshvp/" target='_blank'>
-                <Button>Apply Now</Button>
-              </Link>
+  {filteredJobs.map(job => (
+    <Card key={job._id} className='mb-8 rounded-lg border border-gray-200 overflow-hidden'>
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between mb-4 p-4">
+          <div className="flex items-center space-x-4">
+            <img src={job.imageUrl} alt={job.company} className="w-12 h-12 bg-blue-500 rounded-full" />
+            <div>
+              <h2 className="text-xl font-bold">{job.title}</h2>
+              <p className="text-gray-600">{job.company} | {job.location}</p>
             </div>
           </div>
-        </CardContent>
-        <div className="border-t border-gray-200"></div>
-        <div className="bg-blue-500 text-white p-3 text-center">
-          Share this with your friends and Earn 💵 via LFJ Click Here
+          <Share2 className="text-gray-400" size={20} />
         </div>
-      </Card>
-      ))}
-    </div>
+
+        <div className="flex flex-wrap gap-4 mb-4">
+          {job.skills.map((skill, index) => (
+            <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
+              {skill}
+            </span>
+          ))}
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:flex flex-row items-center text-sm mb-4">
+          {/* Job Offer */}
+          <div className="flex items-center flex-1">
+            <div className="flex flex-col items-center w-full">
+              <p className="text-gray-600">💼 Job Offer</p>
+              <p className="font-semibold mt-1">{job.salaryRange}</p>
+            </div>
+          </div>
+
+          {/* Start Date */}
+          <div className="flex items-center flex-1">
+            <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+            <div className="flex flex-col items-center w-full">
+              <p className="text-gray-600">📅 Start Date</p>
+              <p className="font-semibold mt-1">{job.immediateStartDate}</p>
+            </div>
+          </div>
+
+          {/* Openings */}
+          <div className="flex items-center flex-1">
+            <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+            <div className="flex flex-col items-center w-full">
+              <p className="text-gray-600">#Openings</p>
+              <p className="font-semibold mt-1">{job.jobOpenings}</p>
+            </div>
+          </div>
+
+          {/* Probation Duration */}
+          <div className="flex items-center flex-1">
+            <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+            <div className="flex flex-col items-center w-full">
+              <p className="text-gray-600">Probation Duration</p>
+              <p className="font-semibold mt-1">{job.probationDuration}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="md:hidden flex flex-col space-y-4 mb-4">
+          {/* Job Offer */}
+          <div className="flex flex-col items-center">
+            <p className="text-gray-600">💼 Job Offer</p>
+            <p className="font-semibold mt-1">{job.salaryRange}</p>
+          </div>
+
+          {/* Start Date */}
+          <div className="flex flex-col items-center">
+            <p className="text-gray-600">📅 Start Date</p>
+            <p className="font-semibold mt-1">{job.immediateStartDate}</p>
+          </div>
+
+          {/* Openings */}
+          <div className="flex flex-col items-center">
+            <p className="text-gray-600">#Openings</p>
+            <p className="font-semibold mt-1">{job.jobOpenings}</p>
+          </div>
+
+          {/* Probation Duration */}
+          <div className="flex flex-col items-center">
+            <p className="text-gray-600">Probation Duration</p>
+            <p className="font-semibold mt-1">{job.probationDuration}</p>
+          </div>
+        </div>
+
+        <p className="text-sm text-blue-500">100+ applicants</p>
+
+        <div className="flex flex-col lg:flex-row justify-between items-center">
+          <p className="text-sm text-gray-500">Apply by 13 October 2024 • Posted 7h ago</p>
+          <div className="space-x-2 mt-4 lg:mt-0">
+            <Link href={job.url} target='_blank'>
+              <Button variant="outline">View Details</Button>
+            </Link>
+            <Link href={job.url} target='_blank'>
+              <Button>Apply Now</Button>
+            </Link>
+          </div>
+        </div>
+      </CardContent>
+
+      {/* End Section with Curved Border */}
+      <div className="border-t border-gray-200 rounded-b-lg bg-blue-500 text-white p-3 text-center">
+        Share this with your friends and Earn 💵 via LFJ Click Here
+      </div>
+    </Card>
+  ))}
+</div>
+
   </div>
 
   {/* Right column: Job/Internship Location Preference and Filters */}

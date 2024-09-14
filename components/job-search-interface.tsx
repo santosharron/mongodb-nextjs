@@ -52,7 +52,7 @@ export function JobSearchInterfaceComponent() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [skillSearchTerm, setSkillSearchTerm] = useState("");
   const [filteredSkills, setFilteredSkills] = useState<string[]>(skillsList);
-  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedTitle] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedExperience, setSelectedExperience] = useState("");
   const [salaryRange, setSalaryRange] = useState<number[]>([0, 12]); // Default range
@@ -365,7 +365,7 @@ export function JobSearchInterfaceComponent() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-gray-600 mb-4">
-            Add your preferred locations for In-Office Jobs/Internship (Up to 3). Add "Remote" if you want only work from home Jobs.
+            Add your preferred locations for In-Office Jobs/Internship (Up to 3). Add &quot;Remote&quot; if you want only work from home Jobs.
           </p>
           <Select onValueChange={handleLocationChange}>
             <SelectTrigger>

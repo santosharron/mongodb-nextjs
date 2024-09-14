@@ -9,10 +9,11 @@ interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimit
   nonCompletedClassName?: string;
   thumbClassName?: string;
   stepMarks?: number[];
+  onValueChange?: (value: number[]) => void;
 }
 
 const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
-  ({ className, completedClassName, nonCompletedClassName, thumbClassName, stepMarks = [], ...props }, ref) => {
+  ({ className, completedClassName, nonCompletedClassName, thumbClassName, stepMarks = [], onValueChange, ...props }, ref) => {
     const [value, setValue] = React.useState<number[]>([0]);
 
     React.useEffect(() => {
@@ -28,8 +29,8 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
         {...props}
         onValueChange={(val) => {
           setValue(val);
-          if (props.onValueChange) {
-            (props.onValueChange as any)(val);
+          if (onValueChange) {
+            onValueChange(val); // Use the typed onValueChange
           }
         }}
       >

@@ -5,13 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Info, ListFilter, Share2 } from "lucide-react";
+import { ListFilter, Share2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-
-import { ObjectId } from "mongodb";
-import clientPromise from "@/lib/mongodb";
-import { GetStaticProps } from "next";
 import Link from 'next/link';
 
 import { Slider } from '@/components/ui/slider'; // Import Shadcn Slider

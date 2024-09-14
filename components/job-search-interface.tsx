@@ -28,6 +28,7 @@ interface Job {
   skills: string[];
   salaryRange: string;
   experienceLevel: string;
+  probationDuration: string;
 }
 
 const locations = [
@@ -262,32 +263,74 @@ export function JobSearchInterfaceComponent() {
             ))}
           </div>
   
-          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-            <div>
-              <p className="text-gray-600">💼 Job Offer</p>
-              <p className="font-semibold">{job.salaryRange}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Experience</p>
-              <p className="font-semibold">{job.experienceLevel}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">📅 Start Date</p>
-              <p className="font-semibold">{job.immediateStartDate}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">#Openings</p>
-              <p className="font-semibold">{job.jobOpenings}</p>
-            </div>
-            <div className="col-span-2 flex items-center">
-              <div>
-                <p className="text-gray-600">Probation Duration</p>
-                <p className="font-semibold">{job.immediateStartDate}</p>
-              </div>
-            </div>
-          </div>
+         {/* Desktop Layout */}
+<div className="hidden md:flex flex-row items-center text-sm mb-4">
+  {/* Job Offer */}
+  <div className="flex items-center flex-1">
+    <div className="flex flex-col items-center w-full">
+      <p className="text-gray-600">💼 Job Offer</p>
+      <p className="font-semibold mt-1">{job.salaryRange}</p>
+    </div>
+  </div>
+
+  {/* Start Date */}
+  <div className="flex items-center flex-1">
+    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+    <div className="flex flex-col items-center w-full">
+      <p className="text-gray-600">📅 Start Date</p>
+      <p className="font-semibold mt-1">{job.immediateStartDate}</p>
+    </div>
+  </div>
+
+  {/* Openings */}
+  <div className="flex items-center flex-1">
+    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+    <div className="flex flex-col items-center w-full">
+      <p className="text-gray-600">#Openings</p>
+      <p className="font-semibold mt-1">{job.jobOpenings}</p>
+    </div>
+  </div>
+
+  {/* Probation Duration */}
+  <div className="flex items-center flex-1">
+    <div className="border-l h-6 border-gray-300 mx-4"></div> {/* Vertical border */}
+    <div className="flex flex-col items-center w-full">
+      <p className="text-gray-600">Probation Duration</p>
+      <p className="font-semibold mt-1">{job.probationDuration}</p>
+    </div>
+  </div>
+</div>
+
+{/* Mobile Layout */}
+<div className="md:hidden flex flex-col space-y-4 mb-4">
+  {/* Job Offer */}
+  <div className="flex flex-col items-center">
+    <p className="text-gray-600">💼 Job Offer</p>
+    <p className="font-semibold mt-1">{job.salaryRange}</p>
+  </div>
+
+  {/* Start Date */}
+  <div className="flex flex-col items-center">
+    <p className="text-gray-600">📅 Start Date</p>
+    <p className="font-semibold mt-1">{job.immediateStartDate}</p>
+  </div>
+
+  {/* Openings */}
+  <div className="flex flex-col items-center">
+    <p className="text-gray-600">#Openings</p>
+    <p className="font-semibold mt-1">{job.jobOpenings}</p>
+  </div>
+
+  {/* Probation Duration */}
+  <div className="flex flex-col items-center">
+    <p className="text-gray-600">Probation Duration</p>
+    <p className="font-semibold mt-1">{job.probationDuration}</p>
+  </div>
+</div>
+
+
   
-          <p className="text-sm text-blue-500 mb-4">100+ applicants</p>
+          <p className="text-sm text-blue-500">100+ applicants</p>
   
           <div className="flex flex-col lg:flex-row justify-between items-center">
             <p className="text-sm text-gray-500">Apply by 13 October 2024 • Posted 7h ago</p>

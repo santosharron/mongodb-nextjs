@@ -10,6 +10,7 @@ interface Job {
   skills: string[];
   salaryRange: string;
   experienceLevel: string;
+  probationDuration: string;
 }
 
 export async function GET() {

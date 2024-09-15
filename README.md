@@ -1,5 +1,5 @@
-
-> **_Note:_** Due to time constraints, I am submitting this task earlier than planned. Please note that I won't be able to edit this README file further. Since this repository is public, others might use or reference it. I appreciate your understanding.
+> [!NOTE] 
+> Due to time constraints, I am submitting this task earlier than planned. Please note that I won't be able to edit this README file further. Since this repository is public, others might use or reference it. I appreciate your understanding.
 
 
 ## Getting Started
